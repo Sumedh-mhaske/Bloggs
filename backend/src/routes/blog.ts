@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
+import { createBlogInput, updateBlogInput } from "@sumedh31/bloggs-common";
 import { Hono } from "hono";
 import { verify } from "hono/jwt";
 
@@ -36,6 +37,15 @@ blogRouter.post("/", async (c) => {
   const body = await c.req.json();
   const userId = c.get("userId");
 
+  const { success } = createBlogInput.safeParse(body);
+
+  if (!success) {
+    c.status(411);
+    return c.json({
+      message: "Inputs not valid",
+    });
+  }
+
   try {
     const blog = await prisma.post.create({
       data: {
@@ -60,6 +70,15 @@ blogRouter.put("/", async (c) => {
 
   const body = await c.req.json();
 
+  const { success } = updateBlogInput.safeParse(body);
+
+  if (!success) {
+    c.status(411);
+    return c.json({
+      message: "Inputs not valid",
+    });
+  }
+
   try {
     const blog = await prisma.post.update({
       where: {
@@ -68,7 +87,7 @@ blogRouter.put("/", async (c) => {
       data: {
         title: body.title,
         content: body.content,
-        published: true,
+        published: body.published,
       },
     });
 
@@ -80,7 +99,7 @@ blogRouter.put("/", async (c) => {
   }
 });
 
-// Pagination
+// User "skip" and "keep" for pagination
 
 blogRouter.get("/bulk", async (c) => {
   const prisma = new PrismaClient({
