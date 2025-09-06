@@ -1,6 +1,8 @@
 import type { SignupInput } from "@sumedh31/bloggs-common";
 import { useState, type ChangeEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BACKEND_URL } from "../config";
 
 export function Auth({ type }: { type: "signup" | "signin" }) {
   const [postInputs, setPostInputs] = useState<SignupInput>({
@@ -8,6 +10,22 @@ export function Auth({ type }: { type: "signup" | "signin" }) {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
+
+  async function sendRequest() {
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`,
+        postInputs,
+      );
+
+      const jwt = response.data;
+      localStorage.setItem("token", jwt);
+      navigate("/blogs");
+    } catch (err) {
+      alert("Something went wrong");
+    }
+  }
 
   return (
     <div className="h-screen flex justify-center flex-col">
@@ -41,9 +59,7 @@ export function Auth({ type }: { type: "signup" | "signin" }) {
                   });
                 }}
               />
-            ) : (
-              ""
-            )}
+            ) : null}
             <LabelledInput
               label="Username"
               placeholder="sumedh@gmail.com"
@@ -67,6 +83,7 @@ export function Auth({ type }: { type: "signup" | "signin" }) {
             />
             <button
               type="button"
+              onClick={sendRequest}
               className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 mt-8 w-full cursor-pointer"
             >
               {type === "signup" ? "Sign up" : "Sign in"}

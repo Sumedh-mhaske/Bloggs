@@ -37,7 +37,7 @@ userRouter.post("/signup", async (c) => {
 
     const token = await sign({ id: user.id }, c.env.JWT_SECRET);
 
-    return c.json({ token: token });
+    return c.json({ token });
   } catch (error) {
     c.status(411);
     return c.text("Invalid" + error);
