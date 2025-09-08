@@ -19,7 +19,7 @@ export function Auth({ type }: { type: "signup" | "signin" }) {
         postInputs,
       );
 
-      const jwt = response.data;
+      const jwt = response.data.jwt;
       localStorage.setItem("token", jwt);
       navigate("/blogs");
     } catch (err) {

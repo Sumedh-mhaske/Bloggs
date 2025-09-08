@@ -16,7 +16,7 @@ export const blogRouter = new Hono<{
 
 blogRouter.use("/*", async (c, next) => {
   const header = c.req.header("Authorization") || "";
-  const token = header.split(" ")[1];
+  const token = header.startsWith("Bearer ") ? header.split(" ")[1] : header;
 
   const user = await verify(token, c.env.JWT_SECRET);
 
@@ -107,7 +107,18 @@ blogRouter.get("/bulk", async (c) => {
   }).$extends(withAccelerate());
 
   try {
-    const blogs = await prisma.post.findMany();
+    const blogs = await prisma.post.findMany({
+      select: {
+        content: true,
+        title: true,
+        id: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
 
     c.status(200);
     return c.json({ blogs });
