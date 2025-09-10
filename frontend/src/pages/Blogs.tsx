@@ -10,7 +10,7 @@ export function Blogs() {
     return (
       <div>
         <Appbar />
-        <LoadingSkeleton />
+        <LoadingSkeleton variant="list" />
       </div>
     );
   }
@@ -24,7 +24,7 @@ export function Blogs() {
             <BlogCard
               id={blog.id}
               key={`blog${blog.id}`}
-              authorName={blog.author.name || "Unknown"}
+              authorName={blog.author.name || "Anonymous"}
               title={blog.title}
               content={blog.content}
               publishedDate="9 Aug 2025"
