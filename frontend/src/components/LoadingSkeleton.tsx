@@ -42,35 +42,52 @@ export function LoadingSkeleton({
 
   // Full blog skeleton (single page like Medium)
   return (
-    <div
-      role="status"
-      className="max-w-screen-md mx-auto w-screen animate-pulse p-6"
-    >
-      {/* Title */}
-      <div className="h-8 w-3/4 bg-gray-200 rounded mb-6"></div>
+    <div className="max-w-screen-xl mx-auto px-6 py-8">
+      <div className="flex gap-12">
+        {/* Main content area */}
+        <div className="flex-1">
+          {/* Long title */}
+          <div className="mb-6 space-y-3 animate-pulse">
+            <div className="h-12 w-full bg-gray-200 rounded"></div>
+            <div className="h-12 w-full bg-gray-200 rounded"></div>
+          </div>
 
-      {/* Author row */}
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="h-10 w-10 rounded-full bg-gray-200"></div>
-        <div className="h-3 w-24 bg-gray-200 rounded"></div>
-        <div className="h-1 w-1 rounded-full bg-gray-200"></div>
-        <div className="h-3 w-16 bg-gray-200 rounded"></div>
+          {/* Date */}
+          <div className="h-4 w-40 bg-gray-200 rounded mb-8 animate-pulse"></div>
+
+          {/* Content paragraph */}
+          <div className="space-y-4 animate-pulse">
+            <div className="h-4 w-full bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-gray-200 rounded"></div>
+            <div className="h-4 w-full bg-gray-200 rounded"></div>
+            <div className="h-4 w-3/4 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="w-72">
+          {/* Author section */}
+          <div className="animate-pulse">
+            <div className="h-4 w-12 bg-gray-200 rounded mb-3"></div>
+
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="h-8 w-8 rounded-full bg-gray-200"></div>
+              <div className="h-4 w-16 bg-gray-200 rounded"></div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="h-3 w-full bg-gray-200 rounded"></div>
+              <div className="h-3 w-3/4 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        </div>
       </div>
-
-      {/* Big image placeholder */}
-      <div className="h-60 w-full bg-gray-200 rounded mb-8"></div>
-
-      {/* Paragraph lines */}
-      <div className="space-y-3">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className={`h-3 ${i % 2 === 0 ? "w-full" : "w-5/6"} bg-gray-200 rounded`}
-          ></div>
-        ))}
-      </div>
-
-      <span className="sr-only">Loading...</span>
     </div>
   );
 }
