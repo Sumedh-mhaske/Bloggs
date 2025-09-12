@@ -18,7 +18,7 @@ export function BlogCard({
   publishedDate,
 }: BlogCardTypes) {
   return (
-    <Link to={`/blog${id}`}>
+    <Link to={`/blog/${id}`}>
       <div className="p-4 border-b border-slate-200 max-w-screen-md pb-4 w-screen cursor-pointer">
         <div className="flex">
           <Avatar size="small" name={authorName} />

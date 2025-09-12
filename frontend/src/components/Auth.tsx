@@ -19,8 +19,11 @@ export function Auth({ type }: { type: "signup" | "signin" }) {
         postInputs,
       );
 
-      const jwt = response.data.jwt;
+      const { jwt, user } = response.data;
+
       localStorage.setItem("token", jwt);
+      localStorage.setItem("user", JSON.stringify(user));
+
       navigate("/blogs");
     } catch (err) {
       alert("Something went wrong");
@@ -32,10 +35,10 @@ export function Auth({ type }: { type: "signup" | "signin" }) {
       <div className="flex justify-center">
         <div>
           <div className="px-10">
-            <div className="font-bold text-3xl text-center">
+            <div className="font-bold text-4xl text-center">
               {type === "signup" ? "Create an account" : "Sign in"}
             </div>
-            <div className="text-slate-500 text-center">
+            <div className="text-slate-500 text-center text-lg pt-2">
               {type === "signup"
                 ? "Already have an account?"
                 : "Don't have an account?"}
@@ -84,7 +87,7 @@ export function Auth({ type }: { type: "signup" | "signin" }) {
             <button
               type="button"
               onClick={sendRequest}
-              className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 mt-8 w-full cursor-pointer"
+              className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mb-2 mt-8 w-full cursor-pointer"
             >
               {type === "signup" ? "Sign up" : "Sign in"}
             </button>
@@ -110,12 +113,12 @@ function LabelledInput({
 }: LabelledInputTypes) {
   return (
     <div>
-      <label className="block mb-2 text-sm font-medium pt-4">{label}</label>
+      <label className="block mb-2 text-lg font-medium pt-4">{label}</label>
       <input
         type={type || "text"}
         id="first_name"
         onChange={onChange}
-        className="bg-gray-50 border border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        className="bg-gray-50 border border-gray-400 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
         placeholder={placeholder}
         required
       />
