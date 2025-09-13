@@ -33,7 +33,7 @@ export function BlogCard({
           </div>
         </div>
         <div className="text-xl font-bold pt-2">{title}</div>
-        <div>
+        <div className="whitespace-pre-wrap">
           {content.length > 100 ? content.slice(0, 100) + "..." : content}
         </div>
         <div className="pt-4 text-sm font-light text-slate-500 pb-6">{`${Math.ceil(content.length / 60)} min read`}</div>

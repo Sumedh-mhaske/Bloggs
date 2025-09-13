@@ -13,7 +13,9 @@ export function FullBlog({ blog }: { blog: BlogType }) {
             <div className="text-slate-500 pt-4">
               Post on 9th September 2025
             </div>
-            <div className="pt-6 text-xl">{blog.content}</div>
+            <div className="pt-6 text-xl whitespace-pre-wrap">
+              {blog.content}
+            </div>
           </div>
           <div className="col-span-4">
             Author
