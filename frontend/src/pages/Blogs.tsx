@@ -73,7 +73,7 @@ export function Blogs() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogs.map((blog) => (
+            {blogs.map((blog, index) => (
               <BlogCard
                 key={`blog-${blog.id}`}
                 id={blog.id}
@@ -81,6 +81,7 @@ export function Blogs() {
                 title={blog.title}
                 content={blog.content}
                 publishedDate="9 Aug 2025"
+                index={index}
               />
             ))}
           </div>
