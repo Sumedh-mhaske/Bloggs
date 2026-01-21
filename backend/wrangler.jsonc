@@ -3,9 +3,7 @@
   "name": "backend",
   "main": "src/index.ts",
   "compatibility_date": "2025-08-21",
-  // "compatibility_flags": [
-  //   "nodejs_compat"
-  // ],
+  "compatibility_flags": ["nodejs_compat"],
   "vars": {
     "DATABASE_URL": "prisma://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3RfaWQiOjEsInNlY3VyZV9rZXkiOiJza19jd3FBZVBQM1pRdVdwcFBkdGRTUGsiLCJhcGlfa2V5IjoiMDFLMzY4NE42V0JYMk1NNzBYOTc1NFZLQVYiLCJ0ZW5hbnRfaWQiOiJhZWYyODE0ZjRjM2I1OWZmMjBhZGNjYzc1NTVlNTNjYmU0ZDMxNzMwZDEzMjkxY2M0M2JmOGE3ZjFlMzI0OTVjIiwiaW50ZXJuYWxfc2VjcmV0IjoiNjgyZmNlYmEtODE1Yy00YmJlLWFkYjItYmM3ODlkMmE3ZGEyIn0.CLu8ch6a-I9w7nZVlMKy3vT-KTBv6BQm8Hy47rMoB-M",
     "JWT_SECRET": "secretpassword",

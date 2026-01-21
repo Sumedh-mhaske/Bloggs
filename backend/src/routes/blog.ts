@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client/edge";
+import { PrismaClient } from "../generated/prisma";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { createBlogInput, updateBlogInput } from "@sumedh31/bloggs-common";
 import { Hono } from "hono";
@@ -18,7 +18,7 @@ blogRouter.use("/*", async (c, next) => {
   const header = c.req.header("Authorization") || "";
   const token = header.startsWith("Bearer ") ? header.split(" ")[1] : header;
 
-  const user = await verify(token, c.env.JWT_SECRET);
+  const user = await verify(token, c.env.JWT_SECRET, "HS256");
 
   if (user) {
     c.set("userId", String(user.id));
