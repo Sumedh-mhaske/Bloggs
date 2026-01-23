@@ -22,7 +22,10 @@ model User {
   name      String?
   password  String
   posts     Post[]
+  
+  @@unique([email, password]) 
 }
+
 
 model Post {
   id        String  @id @default(uuid())

@@ -13,29 +13,30 @@ export const userRouter = new Hono<{
 
 userRouter.post("/signin", async (c) => {
   const prisma = new PrismaClient({
-    accelerateUrl: c.env.DATABASE_URL,
+    datasources: {
+      db: {
+        url: c.env.DATABASE_URL, // ✅ Consistent Accelerate URL
+      },
+    },
   }).$extends(withAccelerate());
 
   const body = await c.req.json();
   const { success } = signinInput.safeParse(body);
 
   if (!success) {
-    c.status(411);
-    return c.json({
-      message: "Inputs not valid",
-    });
+    return c.json({ message: "Invalid inputs" }, 400);
   }
+
   try {
+    // ✅ Use email only (password check separate)
     const user = await prisma.user.findUnique({
       where: {
         email: body.email,
-        password: body.password,
       },
     });
 
-    if (!user) {
-      c.status(403);
-      return c.json({ error: "user not found" });
+    if (!user || user.password !== body.password) {
+      return c.json({ error: "Invalid credentials" }, 401);
     }
 
     const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
@@ -48,7 +49,51 @@ userRouter.post("/signin", async (c) => {
       },
     });
   } catch (err) {
-    c.status(411);
-    return c.text("Invalid" + err);
+    console.error("Signin error:", err);
+    return c.json({ error: "Internal server error" }, 500);
+  }
+});
+
+userRouter.post("/signup", async (c) => {
+  const prisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: c.env.DATABASE_URL, // ✅ Consistent
+      },
+    },
+  }).$extends(withAccelerate());
+
+  const body = await c.req.json();
+  const { success, data } = signupInput.safeParse(body);
+
+  if (!success) {
+    return c.json({ message: "Invalid inputs" }, 400);
+  }
+
+  try {
+    const user = await prisma.user.create({
+      data: {
+        id: crypto.randomUUID(),
+        email: data.email,
+        name: data.name,
+        password: data.password, // TODO: Add bcrypt hashing in production
+      },
+    });
+
+    const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
+    return c.json({
+      jwt,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+    });
+  } catch (err: any) {
+    if (err.code === "P2002") {
+      return c.json({ error: "Email already exists" }, 409);
+    }
+    console.error("Signup error:", err);
+    return c.json({ error: "Internal server error" }, 500);
   }
 });
