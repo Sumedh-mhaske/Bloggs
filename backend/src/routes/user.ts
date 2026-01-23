@@ -11,46 +11,6 @@ export const userRouter = new Hono<{
   };
 }>();
 
-userRouter.post("/signup", async (c) => {
-  const prisma = new PrismaClient({
-    accelerateUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-
-  const body = await c.req.json();
-  const { success } = signupInput.safeParse(body);
-
-  if (!success) {
-    c.status(411);
-    return c.json({
-      message: "Inputs not correct",
-    });
-  }
-
-  try {
-    const user = await prisma.user.create({
-      data: {
-        email: body.email,
-        name: body.name,
-        password: body.password,
-      },
-    });
-
-    const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-
-    return c.json({
-      jwt: token,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-      },
-    });
-  } catch (error) {
-    c.status(411);
-    return c.text("Invalid" + error);
-  }
-});
-
 userRouter.post("/signin", async (c) => {
   const prisma = new PrismaClient({
     accelerateUrl: c.env.DATABASE_URL,
