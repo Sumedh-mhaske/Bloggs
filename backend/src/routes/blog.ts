@@ -1,4 +1,4 @@
-import { PrismaClient } from "../generated/prisma";
+import { PrismaClient } from "../generated/prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { createBlogInput, updateBlogInput } from "@sumedh31/bloggs-common";
 import { Hono } from "hono";
@@ -18,20 +18,20 @@ blogRouter.use("/*", async (c, next) => {
   const header = c.req.header("Authorization") || "";
   const token = header.startsWith("Bearer ") ? header.split(" ")[1] : header;
 
-  const user = await verify(token, c.env.JWT_SECRET, "HS256");
-
-  if (user) {
+  try {
+    const user = await verify(token, c.env.JWT_SECRET, "HS256");
     c.set("userId", String(user.id));
     await next();
-  } else {
+  } catch (err) {
+    // 👈 If verify fails, it hits this catch block
     c.status(403);
-    return c.json({ error: "Unauthorized" });
+    return c.json({ error: "Unauthorized or Invalid Token" });
   }
 });
 
 blogRouter.post("/", async (c) => {
   const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
+    accelerateUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
   const body = await c.req.json();
@@ -65,7 +65,7 @@ blogRouter.post("/", async (c) => {
 
 blogRouter.put("/", async (c) => {
   const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
+    accelerateUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
   const body = await c.req.json();
@@ -103,7 +103,7 @@ blogRouter.put("/", async (c) => {
 
 blogRouter.get("/bulk", async (c) => {
   const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
+    accelerateUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
   try {
@@ -130,9 +130,8 @@ blogRouter.get("/bulk", async (c) => {
 
 blogRouter.get("/:id", async (c) => {
   const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
+    accelerateUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-
   const id = c.req.param("id");
 
   try {
