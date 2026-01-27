@@ -7,18 +7,15 @@
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.3.0",
-    "@prisma/client": "^7.3.0",
-    "@prisma/extension-accelerate": "^3.0.1",
+    "@prisma/client": "^5.19.1",
     "@sumedh31/bloggs-common": "^1.0.0",
     "dotenv": "^17.2.3",
     "hono": "^4.9.2",
-    "pg": "^8.17.2"
+    "pg": "^8.11.5",
+    "prisma": "^5.19.1"
   },
   "devDependencies": {
     "@types/pg": "^8.16.0",
-    "accelerate": "^1.0.1",
-    "prisma": "^7.2.0",
     "wrangler": "^4.4.0"
   }
 }

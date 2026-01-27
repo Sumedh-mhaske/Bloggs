@@ -1,6 +1,4 @@
-import { PrismaClient } from "../generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { withAccelerate } from "@prisma/extension-accelerate";
+import { PrismaClient } from "../generated/prisma/edge";
 import { createBlogInput, updateBlogInput } from "@sumedh31/bloggs-common";
 import { Hono } from "hono";
 import { verify } from "hono/jwt";
@@ -24,17 +22,13 @@ blogRouter.use("/*", async (c, next) => {
     c.set("userId", String(user.id));
     await next();
   } catch (err) {
-    // 👈 If verify fails, it hits this catch block
     c.status(403);
     return c.json({ error: "Unauthorized or Invalid Token" });
   }
 });
 
 blogRouter.post("/", async (c) => {
-  const adapter = new PrismaPg({ connectionString: c.env.DATABASE_URL });
-
-  const prisma = new PrismaClient({ adapter }).$extends(withAccelerate());
-
+  const prisma = new PrismaClient();
   const body = await c.req.json();
   const userId = c.get("userId");
 
@@ -60,15 +54,12 @@ blogRouter.post("/", async (c) => {
     return c.json({ id: blog.id });
   } catch (err) {
     c.status(400);
-    return c.text("Invalid" + err);
+    return c.text("Invalid operation");
   }
 });
 
 blogRouter.put("/", async (c) => {
-  const adapter = new PrismaPg({ connectionString: c.env.DATABASE_URL });
-
-  const prisma = new PrismaClient({ adapter }).$extends(withAccelerate());
-
+  const prisma = new PrismaClient();
   const body = await c.req.json();
 
   const { success } = updateBlogInput.safeParse(body);
@@ -93,19 +84,15 @@ blogRouter.put("/", async (c) => {
     });
 
     c.status(200);
-    return c.json({ id: blog.id, message: "Info updated succesfully" });
+    return c.json({ id: blog.id, message: "Info updated successfully" });
   } catch (err) {
     c.status(400);
-    return c.text("Invalid" + err);
+    return c.text("Invalid operation");
   }
 });
 
-// User "skip" and "keep" for pagination
-
 blogRouter.get("/bulk", async (c) => {
-  const prisma = new PrismaClient({
-    accelerateUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const prisma = new PrismaClient();
 
   try {
     const blogs = await prisma.post.findMany({
@@ -125,14 +112,12 @@ blogRouter.get("/bulk", async (c) => {
     return c.json({ blogs });
   } catch (err) {
     c.status(400);
-    return c.text("Invalid" + err);
+    return c.text("Invalid operation");
   }
 });
 
 blogRouter.get("/:id", async (c) => {
-  const prisma = new PrismaClient({
-    accelerateUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const prisma = new PrismaClient();
   const id = c.req.param("id");
 
   try {
@@ -154,13 +139,13 @@ blogRouter.get("/:id", async (c) => {
 
     if (!blog) {
       c.status(404);
-      return c.text("User not found");
+      return c.text("Post not found");
     }
 
     c.status(200);
     return c.json({ blog });
   } catch (err) {
     c.status(400);
-    return c.text("Invalid" + err);
+    return c.text("Invalid operation");
   }
 });
