@@ -1,5 +1,6 @@
 import { Hono } from "hono";
-import { PrismaClient } from "../generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "../generated/prisma";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { sign, verify } from "hono/jwt";
 import { signinInput, signupInput } from "@sumedh31/bloggs-common";
@@ -12,13 +13,9 @@ export const userRouter = new Hono<{
 }>();
 
 userRouter.post("/signin", async (c) => {
-  const prisma = new PrismaClient({
-    datasources: {
-      db: {
-        url: c.env.DATABASE_URL, // ✅ Consistent Accelerate URL
-      },
-    },
-  }).$extends(withAccelerate());
+  const adapter = new PrismaPg({ connectionString: c.env.DATABASE_URL });
+
+  const prisma = new PrismaClient({ adapter }).$extends(withAccelerate());
 
   const body = await c.req.json();
   const { success } = signinInput.safeParse(body);
@@ -55,13 +52,9 @@ userRouter.post("/signin", async (c) => {
 });
 
 userRouter.post("/signup", async (c) => {
-  const prisma = new PrismaClient({
-    datasources: {
-      db: {
-        url: c.env.DATABASE_URL, // ✅ Consistent
-      },
-    },
-  }).$extends(withAccelerate());
+  const adapter = new PrismaPg({ connectionString: c.env.DATABASE_URL });
+
+  const prisma = new PrismaClient({ adapter }).$extends(withAccelerate());
 
   const body = await c.req.json();
   const { success, data } = signupInput.safeParse(body);

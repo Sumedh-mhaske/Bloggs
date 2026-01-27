@@ -1,4 +1,5 @@
 import { PrismaClient } from "../generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { createBlogInput, updateBlogInput } from "@sumedh31/bloggs-common";
 import { Hono } from "hono";
@@ -30,9 +31,9 @@ blogRouter.use("/*", async (c, next) => {
 });
 
 blogRouter.post("/", async (c) => {
-  const prisma = new PrismaClient({
-    accelerateUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const adapter = new PrismaPg({ connectionString: c.env.DATABASE_URL });
+
+  const prisma = new PrismaClient({ adapter }).$extends(withAccelerate());
 
   const body = await c.req.json();
   const userId = c.get("userId");
@@ -64,9 +65,9 @@ blogRouter.post("/", async (c) => {
 });
 
 blogRouter.put("/", async (c) => {
-  const prisma = new PrismaClient({
-    accelerateUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const adapter = new PrismaPg({ connectionString: c.env.DATABASE_URL });
+
+  const prisma = new PrismaClient({ adapter }).$extends(withAccelerate());
 
   const body = await c.req.json();
 
